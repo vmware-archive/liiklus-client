@@ -1,0 +1,29 @@
+= Simple Liiklus Client
+
+This repository contains a simple client that can be used to post or read data from a
+hosted Liiklus service, using riff data link:src/main/proto/riff-serialization.proto[encoding]. Useful for demo-ing riff streaming capabilities.
+
+== Usage
+
+[source, bash]
+----
+git clone https://github.com/projectriff-samples/liiklus-client
+cd liiklus-client
+mvn package
+----
+
+Then, typically in two different terminal windows, assuming liiklus is running on
+`my.liiklus.host:6565` (for example as exposed by a kubernetes service):
+
+Producer:
+[source, bash]
+----
+java -jar target/liiklus-client-1.0.0-SNAPSHOT.jar --producer my.liiklus.host:6565 some-stream-to-write-to
+----
+
+Consumer:
+[source, bash]
+----
+java -jar target/liiklus-client-1.0.0-SNAPSHOT.jar --consumer my.liiklus.host:6565 some-stream-to-read-from
+----
+
