@@ -1,9 +1,5 @@
 package com.example;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import com.github.bsideup.liiklus.protocol.Assignment;
 import com.github.bsideup.liiklus.protocol.PublishRequest;
 import com.github.bsideup.liiklus.protocol.ReactorLiiklusServiceGrpc;
@@ -17,12 +13,16 @@ import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.projectriff.processor.serialization.Message;
 import reactor.core.publisher.Flux;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class LiiklusClient {
 
 
 	public static void main(String[] args) {
-		if (args.length != 3) {
-			usage("Usage: LiiklusClient [--producer|--consumer] [liiklus-host:port] [stream-name]");
+		if (args.length < 3) {
+			usage("Usage: LiiklusClient [--producer|--consumer] [liiklus-host:port] [stream-name] [producer-content-type (default text/plain)]");
 		}
 		String liiklusTarget = args[1];
 
@@ -49,7 +49,7 @@ public class LiiklusClient {
 					PublishRequest.newBuilder()
 							.setTopic(args[2])
 							.setKey(ByteString.copyFromUtf8("irrelevant"))
-							.setValue(stringAsMessage(it))
+							.setValue(stringAsMessage(it, args.length == 4 ? args[3] : "text/plain"))
 							.build()
 			))
 						.blockLast();
@@ -93,10 +93,10 @@ public class LiiklusClient {
 	}
 
 
-	private static ByteString stringAsMessage(String it) {
+	private static ByteString stringAsMessage(String payload, String contentType) {
 		return Message.newBuilder()
-				.setPayload(ByteString.copyFromUtf8(it))
-				.setContentType("text/plain")
+				.setPayload(ByteString.copyFromUtf8(payload))
+				.setContentType(contentType)
 				.build().toByteString();
 	}
 
