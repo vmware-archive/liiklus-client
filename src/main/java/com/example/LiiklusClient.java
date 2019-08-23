@@ -64,7 +64,7 @@ public class LiiklusClient {
 										.map(SubscribeReply::getAssignment)
 										.map(LiiklusClient::receiveRequestForAssignment)
 										.flatMap(stub::receive)
-										.doOnNext(rr -> System.out.format("%s: %s%n", topic, extractRiffMessage(rr).getPayload().toStringUtf8()))
+										.doOnNext(rr -> System.out.format("%s", extractRiffMessage(rr).getPayload().toStringUtf8()))
 						).blockLast();
 				break;
 			default:
