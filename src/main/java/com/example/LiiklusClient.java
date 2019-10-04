@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 
 public class LiiklusClient {
 
+	public static final String CONSUMER_GROUP = "liiklus-client";
 	private static int i;
 
 	public static void main(String[] args) {
@@ -67,6 +68,8 @@ public class LiiklusClient {
 																.doOnNext(rr -> System.out.format("%s: %s%n", topic, extractRiffMessage(rr).getPayload().toStringUtf8()))
 																.delayUntil(record -> stub.ack(
 																		AckRequest.newBuilder()
+																				.setPartition(reply.getAssignment().getPartition())
+																				.setGroup(CONSUMER_GROUP)
 																				.setAssignment(reply.getAssignment())
 																				.setOffset(record.getOffset())
 																				.build()
@@ -92,7 +95,7 @@ public class LiiklusClient {
 	private static SubscribeRequest subscribeRequestFor(String topic) {
 		return SubscribeRequest.newBuilder()
 				.setTopic(topic)
-				.setGroup("liiklus-client")
+				.setGroup(CONSUMER_GROUP)
 				.setAutoOffsetReset(SubscribeRequest.AutoOffsetReset.LATEST)
 				.build();
 	}
