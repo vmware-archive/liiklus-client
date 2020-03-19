@@ -17,7 +17,7 @@ public class LiiklusClient {
 
 	public static void main(String[] args) {
 		if (args.length < 3) {
-			usage("Usage: LiiklusClient [--producer|--consumer] [liiklus-host:port] [stream-name] [producer-content-type (default text/plain)]");
+			usage(usageText());
 		}
 		String liiklusTarget = args[1];
 
@@ -77,8 +77,12 @@ public class LiiklusClient {
 						).blockLast();
 				break;
 			default:
-				usage("Usage: TestClient [--producer|--consumer] [liiklus-host] [stream-name]");
+				usage(usageText());
 		}
+	}
+
+	private static String usageText() {
+		return "Usage: LiiklusClient [--producer|--consumer] [liiklus-host:port] [stream-name] [producer-content-type (default text/plain)]";
 	}
 
 	private static Message extractRiffMessage(ReceiveReply.Record r) {
